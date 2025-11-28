@@ -46,15 +46,15 @@ module "eks" {
     initial = {
       instance_types = ["t3.medium", "t3a.medium"]
 
-      min_size     = 2
-      max_size     = 10
-      desired_size = 2
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
 
       capacity_type  = "SPOT"
       disk_size      = 30
 
       labels = {
-        role = "general"
+        nodeTypeClass = "initial"
       }
     }
   }
@@ -66,5 +66,9 @@ module "eks" {
   tags = {
     Environment = local.env
     Terraform   = "true"
+    "karpenter.sh/discovery" = "${local.env}-${local.eks_name}"
+  }
+  security_group_tags = {
+    "karpenter.sh/discovery" = "${local.env}-${local.eks_name}"
   }
 }
