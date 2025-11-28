@@ -5,7 +5,7 @@ resource "kubectl_manifest" "karpenter_nodepool_default" {
     apiVersion: karpenter.sh/v1
     kind: NodePool
     metadata:
-      name: ${local.env}-${local.eks_name}-default
+      name: ${local.env}-${local.name}-default
     spec:
       disruption:
         consolidateAfter: 30s
@@ -22,7 +22,7 @@ resource "kubectl_manifest" "karpenter_nodepool_default" {
           nodeClassRef:
             group: karpenter.k8s.aws
             kind: EC2NodeClass
-            name: ${local.env}-${local.eks_name}-default
+            name: ${local.env}-${local.name}-default
           requirements:
             - key: kubernetes.io/os
               operator: In
@@ -55,7 +55,7 @@ resource "kubectl_manifest" "karpenter_ec2nodeclass_default" {
     apiVersion: karpenter.k8s.aws/v1
     kind: EC2NodeClass
     metadata:
-      name: ${local.env}-${local.eks_name}-default
+      name: ${local.env}-${local.name}-default
     spec:
       role: ${module.eks.eks_managed_node_groups["initial"].iam_role_name}
       amiSelectorTerms:
@@ -68,13 +68,13 @@ resource "kubectl_manifest" "karpenter_ec2nodeclass_default" {
             encrypted: true
       securityGroupSelectorTerms:
         - tags:
-            karpenter.sh/discovery: ${local.env}-${local.eks_name}
+            karpenter.sh/discovery: ${local.env}-${local.name}
       subnetSelectorTerms:
         - tags:
-            karpenter.sh/discovery: ${local.env}-${local.eks_name}
+            karpenter.sh/discovery: ${local.env}-${local.name}
       tags:
-        karpenter.sh/discovery: ${local.env}-${local.eks_name}
-        Name: eks-node-${local.env}-${local.eks_name}-default
+        karpenter.sh/discovery: ${local.env}-${local.name}
+        Name: eks-node-${local.env}-${local.name}-default
         Environment: ${local.env}
   YAML
 }

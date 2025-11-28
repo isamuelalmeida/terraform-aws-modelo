@@ -1,42 +1,31 @@
 # 1
 module "karpenter" {
   depends_on = [module.eks]
-  
+
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "21.9.0"
 
-  cluster_name = "${local.env}-${local.eks_name}"
+  cluster_name = "${local.env}-${local.name}"
 
   namespace = "karpenter"
 
   create_node_iam_role = false
   node_iam_role_arn    = module.eks.eks_managed_node_groups["initial"].iam_role_arn
-  create_access_entry = false
+  create_access_entry  = false
 
 }
 
 # 2
-provider "aws" {
-  alias  = "region_1"
-  region = "us-east-1"
-}
-
-data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.region_1
-}
-
 resource "helm_release" "karpenter" {
   depends_on = [module.karpenter, module.eks.eks_managed_node_groups]
 
   namespace        = "karpenter"
   create_namespace = true
 
-  name                = "karpenter"
-  repository          = "oci://public.ecr.aws/karpenter"
-  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-  repository_password = data.aws_ecrpublic_authorization_token.token.password
-  chart               = "karpenter"
-  version             = "1.6.1"
+  name       = "karpenter"
+  repository = "oci://public.ecr.aws/karpenter"
+  chart      = "karpenter"
+  version    = "1.8.2"
 
   values = [<<-EOT
     replicas: 1

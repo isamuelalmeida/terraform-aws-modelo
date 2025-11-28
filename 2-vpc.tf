@@ -17,14 +17,14 @@ module "vpc" {
   map_public_ip_on_launch = true
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb"                                = "1"
-    "kubernetes.io/cluster/${local.env}-${local.eks_name}" = "owned"
+    "kubernetes.io/role/elb"                           = "1"
+    "kubernetes.io/cluster/${local.env}-${local.name}" = "owned"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb"                       = "1"
-    "kubernetes.io/cluster/${local.env}-${local.eks_name}" = "owned"
-    "karpenter.sh/discovery"  = "${local.env}-${local.eks_name}"
+    "kubernetes.io/role/internal-elb"                  = "1"
+    "kubernetes.io/cluster/${local.env}-${local.name}" = "owned"
+    "karpenter.sh/discovery"                           = "${local.env}-${local.name}"
   }
 
   tags = {
