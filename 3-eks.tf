@@ -35,6 +35,11 @@ module "eks" {
       addon_version     = "v1.3.10-eksbuild.1"
       before_compute               = true
     }
+    metrics-server = {
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version     = "v0.8.0-eksbuild.5"
+    }
   }
 
   eks_managed_node_groups = {
