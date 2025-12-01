@@ -40,6 +40,12 @@ module "eks" {
       resolve_conflicts_on_update = "OVERWRITE"
       addon_version               = "v0.8.0-eksbuild.5"
     }
+    aws-ebs-csi-driver = {
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version               = "v1.53.0-eksbuild.1"
+      service_account_role_arn    = aws_iam_role.ebs_csi_driver.arn
+    }
   }
 
   eks_managed_node_groups = {
