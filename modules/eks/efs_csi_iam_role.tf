@@ -28,7 +28,10 @@ resource "aws_iam_role_policy_attachment" "efs_csi_driver" {
 }
 
 resource "aws_eks_pod_identity_association" "efs_csi_driver" {
-  depends_on = [module.eks]
+  depends_on = [
+    module.eks,
+    aws_iam_role_policy_attachment.efs_csi_driver
+  ]
 
   cluster_name    = module.eks.cluster_name
   namespace       = "kube-system"

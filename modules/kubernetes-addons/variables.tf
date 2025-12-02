@@ -53,3 +53,8 @@ variable "nodepool_config" {
     })
   })
 }
+
+variable "efs_id" {
+  description = "EFS file system ID for StorageClass"
+  type        = string
+}

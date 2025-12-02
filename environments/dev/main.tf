@@ -36,4 +36,18 @@ module "kubernetes_addons" {
   eks_managed_node_groups = module.eks.eks_managed_node_groups
   vpc_id                  = module.vpc.vpc_id
   nodepool_config         = var.eks_config.default
+  efs_id                  = module.efs.efs_id
+}
+
+module "efs" {
+  source = "../../modules/efs"
+
+  env        = var.env
+  name       = var.name
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_node_security_group_id = module.eks.node_security_group_id
+
+  tags = var.common_tags
 }

@@ -19,3 +19,20 @@ resource "kubernetes_storage_class" "gp3" {
     fsType    = "ext4"
   }
 }
+
+resource "kubernetes_storage_class" "efs" {
+  depends_on = [helm_release.karpenter]
+
+  metadata {
+    name = "efs"
+  }
+
+  storage_provisioner = "efs.csi.aws.com"
+  reclaim_policy      = "Delete"
+
+  parameters = {
+    provisioningMode = "efs-ap"
+    fileSystemId     = var.efs_id
+    directoryPerms   = "700"
+  }
+}
