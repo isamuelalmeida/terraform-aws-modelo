@@ -7,8 +7,8 @@ module "vpc" {
   azs          = [var.zone1, var.zone2]
   cluster_name = "${var.env}-${var.name}"
 
-  private_subnets = ["10.200.0.0/19", "10.200.32.0/19"]
-  public_subnets  = ["10.200.64.0/19", "10.200.96.0/19"]
+  private_subnets = var.private_subnets
+  public_subnets  = var.public_subnets
 }
 
 module "eks" {

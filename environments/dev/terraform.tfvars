@@ -7,6 +7,9 @@ zone2  = "us-east-2b"
 eks_version = "1.34"
 vpc_cidr    = "10.200.0.0/16"
 
+private_subnets = ["10.200.0.0/19", "10.200.32.0/19"]
+public_subnets  = ["10.200.64.0/19", "10.200.96.0/19"]
+
 eks_config = {
   default = {
     nodepool = {

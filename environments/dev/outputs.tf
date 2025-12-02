@@ -1,14 +1,4 @@
-output "cluster_name" {
-  description = "Cluster Name"
-  value       = module.eks.cluster_name
-}
-
-output "cluster_endpoint" {
-  description = "Cluster Endpoint"
-  value       = module.eks.cluster_endpoint
-}
-
-output "vpc_id" {
-  description = "VPC ID"
-  value       = module.vpc.vpc_id
+output "configure_kubectl" {
+  description = "Command to configure kubectl"
+  value       = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}"
 }
