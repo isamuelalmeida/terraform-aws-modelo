@@ -5,7 +5,8 @@
 ├── modules/                  # Módulos Reutilizáveis
 │   ├── vpc/                  # Lógica de Rede
 │   ├── eks/                  # Lógica do Cluster EKS
-│   └── kubernetes-addons/    # Karpenter, LBC, etc.
+│   ├── efs/                  # Amazon EFS File Systems
+│   └── kubernetes-addons/    # Karpenter, LBC, StorageClasses
 ├── environments/             # Configurações por Ambiente
 │   ├── dev/
 │   │   ├── main.tf           # Instanciação dos módulos
@@ -62,10 +63,13 @@ aws eks update-kubeconfig --region <region> --name <cluster-name>
 - Criação de VPC, Subnets, Internet Gateway, NAT Gateway e Route Tables.
 
 ### Módulo EKS (`modules/eks`)
-- Criação do Control Plane EKS, Node Groups gerenciados e IAM Roles.
+- Criação do Control Plane EKS, Node Groups gerenciados, IAM Roles e CSI Drivers (EBS, EFS).
+
+### Módulo EFS (`modules/efs`)
+- Criação de Amazon EFS File Systems com criptografia, mount targets e security groups.
 
 ### Módulo Addons (`modules/kubernetes-addons`)
-- Instalação do Karpenter (com NodePools e EC2NodeClasses) e AWS Load Balancer Controller via Helm.
+- Instalação do Karpenter (com NodePools e EC2NodeClasses), AWS Load Balancer Controller e StorageClasses (EBS gp3, EFS).
 
 ## Resolução de Problemas
 

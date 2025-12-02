@@ -54,7 +54,12 @@ variable "nodepool_config" {
   })
 }
 
-variable "efs_id" {
-  description = "EFS file system ID for StorageClass"
-  type        = string
+variable "efs_storage_classes" {
+  description = "Map of EFS StorageClasses to create"
+  type = map(object({
+    efs_id           = string
+    provisioning_mode = optional(string, "efs-ap")
+    directory_perms  = optional(string, "700")
+  }))
+  default = {}
 }

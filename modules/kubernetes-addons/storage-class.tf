@@ -21,18 +21,20 @@ resource "kubernetes_storage_class" "gp3" {
 }
 
 resource "kubernetes_storage_class" "efs" {
+  for_each = var.efs_storage_classes
+
   depends_on = [helm_release.karpenter]
 
   metadata {
-    name = "efs"
+    name = each.key
   }
 
   storage_provisioner = "efs.csi.aws.com"
   reclaim_policy      = "Delete"
 
   parameters = {
-    provisioningMode = "efs-ap"
-    fileSystemId     = var.efs_id
-    directoryPerms   = "700"
+    provisioningMode = each.value.provisioning_mode
+    fileSystemId     = each.value.efs_id
+    directoryPerms   = each.value.directory_perms
   }
 }

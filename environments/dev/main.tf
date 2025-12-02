@@ -36,7 +36,12 @@ module "kubernetes_addons" {
   eks_managed_node_groups = module.eks.eks_managed_node_groups
   vpc_id                  = module.vpc.vpc_id
   nodepool_config         = var.eks_config.default
-  efs_id                  = module.efs.efs_id
+
+  efs_storage_classes = {
+    efs = {
+      efs_id = module.efs.efs_id
+    }
+  }
 }
 
 module "efs" {
