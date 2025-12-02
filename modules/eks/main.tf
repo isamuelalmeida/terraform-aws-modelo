@@ -46,6 +46,12 @@ module "eks" {
       addon_version               = var.addon_versions.aws_ebs_csi_driver
       service_account_role_arn    = aws_iam_role.ebs_csi_driver.arn
     }
+    aws-efs-csi-driver = {
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version               = var.addon_versions.aws_efs_csi_driver
+      service_account_role_arn    = aws_iam_role.efs_csi_driver.arn
+    }
   }
 
   eks_managed_node_groups = {

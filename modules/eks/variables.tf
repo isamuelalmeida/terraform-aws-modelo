@@ -56,6 +56,7 @@ variable "addon_versions" {
     eks_pod_identity_agent = string
     metrics_server         = string
     aws_ebs_csi_driver     = string
+    aws_efs_csi_driver     = string
   })
   default = {
     kube_proxy             = "v1.34.1-eksbuild.2"
@@ -64,5 +65,6 @@ variable "addon_versions" {
     eks_pod_identity_agent = "v1.3.10-eksbuild.1"
     metrics_server         = "v0.8.0-eksbuild.5"
     aws_ebs_csi_driver     = "v1.53.0-eksbuild.1"
+    aws_efs_csi_driver     = "v2.1.15-eksbuild.1"
   }
 }

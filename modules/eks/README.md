@@ -70,6 +70,7 @@ O módulo cria um node group inicial com:
 - **pod-identity-agent**: Autenticação de pods
 - **metrics-server**: Métricas de recursos
 - **ebs-csi-driver**: Volumes EBS persistentes
+- **efs-csi-driver**: Volumes EFS compartilhados
 
 ### Versões Padrão dos Addons
 
@@ -81,6 +82,7 @@ addon_versions = {
   eks_pod_identity_agent = "v1.3.10-eksbuild.1"
   metrics_server         = "v0.8.0-eksbuild.5"
   aws_ebs_csi_driver     = "v1.53.0-eksbuild.1"
+  aws_efs_csi_driver     = "v2.1.15-eksbuild.1"
 }
 ```
 
@@ -103,6 +105,7 @@ module "eks" {
     eks_pod_identity_agent = "v1.4.0-eksbuild.1"
     metrics_server         = "v0.9.0-eksbuild.1"
     aws_ebs_csi_driver     = "v1.54.0-eksbuild.1"
+    aws_efs_csi_driver     = "v2.2.0-eksbuild.1"
   }
 }
 ```
