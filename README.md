@@ -6,7 +6,8 @@
 │   ├── vpc/                  # Lógica de Rede
 │   ├── eks/                  # Lógica do Cluster EKS
 │   ├── efs/                  # Amazon EFS File Systems
-│   └── kubernetes-addons/    # Karpenter, LBC, StorageClasses
+│   ├── kubernetes-addons/    # Karpenter, LBC, StorageClasses
+│   └── external-secrets/     # External Secrets Operator
 ├── environments/             # Configurações por Ambiente
 │   ├── dev/
 │   │   ├── main.tf           # Instanciação dos módulos
@@ -70,6 +71,12 @@ aws eks update-kubeconfig --region <region> --name <cluster-name>
 
 ### Módulo Addons (`modules/kubernetes-addons`)
 - Instalação do Karpenter (com NodePools e EC2NodeClasses), AWS Load Balancer Controller e StorageClasses (EBS gp3, EFS).
+
+### Módulo External Secrets (`modules/external-secrets`)
+- Instalação do External Secrets Operator via Helm com Pod Identity.
+- ClusterSecretStore configurado para AWS Secrets Manager.
+- Sincronização automática de secrets do AWS para Kubernetes.
+- Suporte a múltiplas chaves via `dataFrom.extract`.
 
 ## Resolução de Problemas
 

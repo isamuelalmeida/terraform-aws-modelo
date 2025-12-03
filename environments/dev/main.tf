@@ -60,3 +60,17 @@ module "efs" {
 
   tags = var.common_tags
 }
+
+module "external_secrets" {
+  source = "../../modules/external-secrets"
+
+  env          = var.env
+  name         = var.name
+  cluster_name = module.eks.cluster_name
+  aws_region   = var.region
+
+  # Permite acesso a todos os secrets
+  secrets_arns = ["*"]
+
+  tags = var.common_tags
+}
