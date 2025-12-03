@@ -83,7 +83,7 @@ resource "helm_release" "external_secrets" {
   name             = "external-secrets"
   repository       = "https://charts.external-secrets.io"
   chart            = "external-secrets"
-  version          = "1.1.0"
+  version          = var.chart_version
   namespace        = kubernetes_namespace.external_secrets.metadata[0].name
   create_namespace = false
 
@@ -101,10 +101,12 @@ resource "helm_release" "external_secrets" {
 ############################
 
 resource "kubectl_manifest" "secretstore_aws" {
+  count = var.create_cluster_secret_store ? 1 : 0
+
   depends_on = [helm_release.external_secrets]
 
   yaml_body = <<-YAML
-    apiVersion: external-secrets.io/v1beta1
+    apiVersion: external-secrets.io/v1
     kind: ClusterSecretStore
     metadata:
       name: aws-secrets-manager

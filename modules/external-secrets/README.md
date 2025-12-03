@@ -35,8 +35,10 @@ module "external_secrets" {
 | env | Environment name | string | - | yes |
 | name | Project name | string | - | yes |
 | cluster_name | EKS Cluster name | string | - | yes |
-| aws_region | AWS Region | string | us-east-1 | no |
+| aws_region | AWS Region for Secrets Manager | string | - | yes |
 | secrets_arns | List of Secrets Manager ARNs | list(string) | ["*"] | no |
+| chart_version | ESO Helm chart version | string | 1.1.0 | no |
+| create_cluster_secret_store | Create ClusterSecretStore | bool | true | no |
 | tags | Tags to apply | map(string) | {} | no |
 
 ## Outputs
@@ -45,4 +47,5 @@ module "external_secrets" {
 |------|-------------|
 | iam_role_arn | ARN of the IAM role |
 | namespace | Namespace where ESO is installed |
-| cluster_secret_store_name | Name of the ClusterSecretStore |
+| cluster_secret_store_name | Name of the ClusterSecretStore (if created) |
+| chart_version | Version of the ESO Helm chart |
