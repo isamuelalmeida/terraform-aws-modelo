@@ -26,8 +26,9 @@ variable "subnet_ids" {
 variable "instance_types" {
   description = "List of instance types for the initial node group"
   type        = list(string)
-  default     = ["t3.medium", "t3a.medium"]
+  default     = ["c6i.xlarge", "c6a.xlarge"]
 }
+
 
 variable "capacity_type" {
   description = "Capacity type for the initial node group (SPOT or ON_DEMAND)"

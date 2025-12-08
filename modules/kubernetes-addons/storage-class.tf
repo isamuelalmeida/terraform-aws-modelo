@@ -1,5 +1,4 @@
 resource "kubernetes_storage_class" "gp3" {
-  depends_on = [helm_release.karpenter]
 
   metadata {
     name = "gp3"
@@ -22,8 +21,6 @@ resource "kubernetes_storage_class" "gp3" {
 
 resource "kubernetes_storage_class" "efs" {
   for_each = var.efs_storage_classes
-
-  depends_on = [helm_release.karpenter]
 
   metadata {
     name = each.key

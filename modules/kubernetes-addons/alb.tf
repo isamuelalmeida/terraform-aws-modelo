@@ -35,21 +35,3 @@ resource "aws_eks_pod_identity_association" "aws_lbc" {
   role_arn        = aws_iam_role.aws_lbc.arn
 }
 
-resource "helm_release" "aws_lbc" {
-  depends_on = [helm_release.karpenter]
-
-  name = "aws-load-balancer-controller"
-
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
-  version    = "1.16.0"
-
-  values = [<<-EOT
-    clusterName: ${var.cluster_name}
-    serviceAccount:
-      name: aws-load-balancer-controller
-    vpcId: ${var.vpc_id}
-  EOT
-  ]
-}
