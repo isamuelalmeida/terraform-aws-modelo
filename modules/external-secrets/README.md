@@ -1,13 +1,14 @@
 # External Secrets Operator Module
 
-Módulo para instalação e configuração do External Secrets Operator (ESO) no EKS usando Pod Identity.
+Módulo para criação de recursos AWS necessários para o External Secrets Operator (ESO) no EKS usando Pod Identity.
 
 ## Funcionalidades
 
-- Instalação do External Secrets Operator via Helm
-- Configuração de IAM Role com Pod Identity (não IRSA)
-- ClusterSecretStore para AWS Secrets Manager
-- Suporte a múltiplas secrets via `dataFrom.extract`
+- Criação de IAM Role e Policy para acesso ao AWS Secrets Manager
+- Configuração de Pod Identity Association
+- Criação de Namespace e ServiceAccount
+
+**Nota:** O Helm chart do External Secrets Operator e o ClusterSecretStore devem ser gerenciados pelo ArgoCD.
 
 ## Uso
 
@@ -46,6 +47,5 @@ module "external_secrets" {
 | Name | Description |
 |------|-------------|
 | iam_role_arn | ARN of the IAM role |
-| namespace | Namespace where ESO is installed |
-| cluster_secret_store_name | Name of the ClusterSecretStore (if created) |
-| chart_version | Version of the ESO Helm chart |
+| namespace | Namespace where ESO should be installed |
+| service_account_name | Name of the ServiceAccount |

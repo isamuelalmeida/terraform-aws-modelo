@@ -1,12 +1,14 @@
 # Módulo Kubernetes Addons
 
-Módulo para instalação de addons e configurações do Kubernetes no cluster EKS.
+Módulo para criação de recursos AWS (IAM Roles, Policies, Pod Identity) necessários para addons Kubernetes no cluster EKS.
 
 ## Recursos Criados
 
-- **Karpenter**: Autoscaler de nodes com NodePool e EC2NodeClass
-- **AWS Load Balancer Controller**: Gerenciamento de ALB/NLB
+- **Karpenter**: IAM Role, Instance Profile e Pod Identity Association
+- **AWS Load Balancer Controller**: IAM Role, Policy e Pod Identity Association
 - **StorageClasses**: gp3 (EBS) e EFS (configurável)
+
+**Nota:** Os Helm charts do Karpenter e AWS Load Balancer Controller devem ser gerenciados pelo ArgoCD.
 
 ## Inputs
 
@@ -129,10 +131,12 @@ module "kubernetes_addons" {
 
 ## Karpenter
 
-O Karpenter é configurado com:
-- **NodePool**: Define requisitos e limites de recursos
-- **EC2NodeClass**: Configura AMI, volumes e networking
-- **Consolidation**: Habilitado para otimização de custos
+Este módulo cria os recursos AWS necessários para o Karpenter:
+- IAM Role para os nodes
+- Instance Profile
+- Pod Identity Association para o controller
+
+O Helm chart do Karpenter e os recursos Kubernetes (NodePool, EC2NodeClass) devem ser gerenciados pelo ArgoCD.
 
 ### Exemplo de NodePool Config
 
@@ -163,9 +167,18 @@ nodepool_config = {
 
 ## AWS Load Balancer Controller
 
-Instalado via Helm chart oficial da AWS. Permite criar:
-- Application Load Balancers (ALB) via Ingress
-- Network Load Balancers (NLB) via Service
+Este módulo cria os recursos AWS necessários para o AWS Load Balancer Controller:
+- IAM Role com policy oficial da AWS
+- Pod Identity Association
+
+O Helm chart do AWS Load Balancer Controller deve ser gerenciado pelo ArgoCD.
+
+## Outputs Importantes
+
+Os outputs deste módulo devem ser utilizados na configuração dos Helm charts via ArgoCD:
+
+- `karpenter_node_role_arn`: ARN da IAM Role para os nodes Karpenter
+- `karpenter_node_instance_profile_name`: Nome do Instance Profile para EC2NodeClass
 
 ## Uso no Kubernetes
 

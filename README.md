@@ -6,8 +6,9 @@
 │   ├── vpc/                  # Lógica de Rede
 │   ├── eks/                  # Lógica do Cluster EKS
 │   ├── efs/                  # Amazon EFS File Systems
-│   ├── kubernetes-addons/    # Karpenter, LBC, StorageClasses
-│   └── external-secrets/     # External Secrets Operator
+│   ├── kubernetes-addons/    # IAM Roles para Karpenter e LBC
+│   ├── external-secrets/     # IAM Roles para External Secrets
+│   └── argocd/               # Instalação do ArgoCD
 ├── environments/             # Configurações por Ambiente
 │   ├── dev/
 │   │   ├── main.tf           # Instanciação dos módulos
@@ -25,7 +26,6 @@
 - Terraform >= 1.14
 - AWS CLI v2 configurado
 - kubectl instalado
-- helm instalado
 
 ## Como Usar
 
@@ -69,27 +69,21 @@ aws eks update-kubeconfig --region <region> --name <cluster-name>
 ### Módulo EFS (`modules/efs`)
 - Criação de Amazon EFS File Systems com criptografia, mount targets e security groups.
 
-### Módulo Addons (`modules/kubernetes-addons`)
-- Instalação do Karpenter (com NodePools e EC2NodeClasses), AWS Load Balancer Controller e StorageClasses (EBS gp3, EFS).
+### Módulo Kubernetes Addons (`modules/kubernetes-addons`)
+- Criação de IAM Roles e Policies para Karpenter.
+- Criação de IAM Roles e Policies para AWS Load Balancer Controller.
+- Configuração de Pod Identity Associations.
+- StorageClasses (EBS gp3, EFS).
+
+**Nota:** Os Helm charts do Karpenter e AWS Load Balancer Controller são gerenciados pelo ArgoCD.
 
 ### Módulo External Secrets (`modules/external-secrets`)
-- Instalação do External Secrets Operator via Helm com Pod Identity.
-- ClusterSecretStore configurado para AWS Secrets Manager.
-- Sincronização automática de secrets do AWS para Kubernetes.
-- Suporte a múltiplas chaves via `dataFrom.extract`.
+- Criação de IAM Role e Policy para acesso ao AWS Secrets Manager.
+- Configuração de Pod Identity Association.
+- Criação de Namespace e ServiceAccount.
 
-## Resolução de Problemas
+**Nota:** O Helm chart do External Secrets Operator é gerenciado pelo ArgoCD.
 
-### Erro 403 ao localizar chart do Karpenter
-
-Se encontrar erro `Unable to locate chart oci://public.ecr.aws/karpenter/karpenter`:
-
-```bash
-helm registry logout public.ecr.aws
-```
-
-Se o problema persistir, tente executar o comando para se logar:
-
-```bash
-aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
-```
+### Módulo ArgoCD (`modules/argocd`)
+- Instalação do ArgoCD via Helm.
+- Gerenciamento de aplicações Kubernetes (Karpenter, LBC, External Secrets, etc).
