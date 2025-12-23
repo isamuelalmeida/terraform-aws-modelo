@@ -46,6 +46,8 @@ module "kubernetes_addons" {
       efs_id = module.efs.efs_id
     }
   }
+
+  depends_on = [module.eks]
 }
 
 module "efs" {
@@ -71,17 +73,19 @@ module "external_secrets" {
   secrets_arns = ["*"]
 
   tags = var.common_tags
+
+  depends_on = [module.eks, module.kubernetes_addons]
 }
 
 module "argocd" {
   source = "../../modules/argocd"
 
-  depends_on = [module.eks, module.kubernetes_addons]
-
   env  = var.env
   name = var.name
 
   tags = var.common_tags
+
+  depends_on = [module.eks, module.kubernetes_addons, module.external_secrets]
 }
 
 module "github_oidc" {
