@@ -14,21 +14,16 @@ Módulo para criação de recursos AWS (IAM Roles, Policies, Pod Identity) neces
 
 | Nome | Descrição | Tipo | Obrigatório |
 |------|-----------|------|-------------|
-| env | Nome do ambiente | string | Sim |
-| name | Nome do projeto | string | Sim |
 | cluster_name | Nome do cluster EKS | string | Sim |
-| cluster_endpoint | Endpoint do cluster EKS | string | Sim |
 | eks_managed_node_groups | Node groups do EKS | any | Sim |
-| vpc_id | ID da VPC | string | Sim |
-| nodepool_config | Configuração do Karpenter NodePool | object | Sim |
 | efs_storage_classes | Map de StorageClasses EFS | map(object) | Não |
 
 ## Outputs
 
 | Nome | Descrição |
 |------|-----------|
-| karpenter_node_role_arn | ARN da IAM Role dos nodes Karpenter |
-| karpenter_node_instance_profile_name | Nome do Instance Profile |
+| karpenter_queue_name | Nome da fila SQS do Karpenter |
+| karpenter_service_account_role_arn | ARN da IAM Role do service account Karpenter |
 
 ## StorageClasses
 
@@ -67,36 +62,9 @@ efs_storage_classes = {
 module "kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
 
-  env                     = "dev"
-  name                    = "demo"
   cluster_name            = module.eks.cluster_name
-  cluster_endpoint        = module.eks.cluster_endpoint
   eks_managed_node_groups = module.eks.eks_managed_node_groups
-  vpc_id                  = module.vpc.vpc_id
   
-  nodepool_config = {
-    nodepool = {
-      requirements = {
-        os                  = ["linux"]
-        instance_hypervisor = ["nitro"]
-        arch                = ["amd64"]
-        capacity_type       = ["spot"]
-        instance_family     = ["t3", "t3a"]
-        instance_cpu        = ["2", "4"]
-        zone                = ["us-east-1a", "us-east-1b"]
-      }
-      limits = {
-        cpu    = "100"
-        memory = "200Gi"
-      }
-    }
-    ec2_node_class = {
-      device_name = "/dev/xvda"
-      volume_size = "30Gi"
-      volume_type = "gp3"
-    }
-  }
-
   efs_storage_classes = {
     efs = {
       efs_id = module.efs.efs_id
@@ -110,7 +78,9 @@ module "kubernetes_addons" {
 ```hcl
 module "kubernetes_addons" {
   source = "../../modules/kubernetes-addons"
-  # ... outras configurações
+
+  cluster_name            = module.eks.cluster_name
+  eks_managed_node_groups = module.eks.eks_managed_node_groups
 
   efs_storage_classes = {
     efs = {
@@ -132,38 +102,11 @@ module "kubernetes_addons" {
 ## Karpenter
 
 Este módulo cria os recursos AWS necessários para o Karpenter:
-- IAM Role para os nodes
-- Instance Profile
-- Pod Identity Association para o controller
+- IAM Role para o controller
+- Pod Identity Association
+- SQS Queue para interrupção de nodes
 
 O Helm chart do Karpenter e os recursos Kubernetes (NodePool, EC2NodeClass) devem ser gerenciados pelo ArgoCD.
-
-### Exemplo de NodePool Config
-
-```hcl
-nodepool_config = {
-  nodepool = {
-    requirements = {
-      os                  = ["linux"]
-      instance_hypervisor = ["nitro"]
-      arch                = ["amd64"]
-      capacity_type       = ["spot", "on-demand"]
-      instance_family     = ["t3", "t3a", "c5", "c5a"]
-      instance_cpu        = ["2", "4", "8"]
-      zone                = ["us-east-1a", "us-east-1b", "us-east-1c"]
-    }
-    limits = {
-      cpu    = "1000"
-      memory = "2000Gi"
-    }
-  }
-  ec2_node_class = {
-    device_name = "/dev/xvda"
-    volume_size = "50Gi"
-    volume_type = "gp3"
-  }
-}
-```
 
 ## AWS Load Balancer Controller
 
@@ -175,10 +118,10 @@ O Helm chart do AWS Load Balancer Controller deve ser gerenciado pelo ArgoCD.
 
 ## Outputs Importantes
 
-Os outputs deste módulo devem ser utilizados na configuração dos Helm charts via ArgoCD:
+Os outputs deste módulo podem ser utilizados na configuração dos Helm charts via ArgoCD:
 
-- `karpenter_node_role_arn`: ARN da IAM Role para os nodes Karpenter
-- `karpenter_node_instance_profile_name`: Nome do Instance Profile para EC2NodeClass
+- `karpenter_queue_name`: Nome da fila SQS do Karpenter
+- `karpenter_service_account_role_arn`: ARN da IAM Role do service account Karpenter
 
 ## Uso no Kubernetes
 

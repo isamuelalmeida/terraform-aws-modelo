@@ -12,7 +12,8 @@ output "karpenter_service_account_role_arn" {
 }
 
 output "eks_managed_node_groups" {
-  value = module.eks.eks_managed_node_groups
+  description = "EKS initial node group IAM role ARN"
+  value       = module.eks.eks_managed_node_groups["eks-node-initial"].iam_role_arn
 }
 
 output "github_oidc_provider_arn" {
