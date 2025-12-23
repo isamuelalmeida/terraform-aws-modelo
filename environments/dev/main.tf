@@ -74,11 +74,6 @@ module "external_secrets" {
 module "argocd" {
   source = "../../modules/argocd"
 
-  env  = var.env
-  name = var.name
-
-  tags = var.common_tags
-
   depends_on = [module.eks, module.kubernetes_addons, module.external_secrets]
 }
 

@@ -1,4 +1,1 @@
-output "release_name" {
-  value       = helm_release.argocd.name
-  description = "ArgoCD Helm release name"
-}
+# No outputs - ArgoCD is managed independently
