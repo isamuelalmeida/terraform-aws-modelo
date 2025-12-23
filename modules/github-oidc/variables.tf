@@ -8,18 +8,6 @@ variable "name" {
   type        = string
 }
 
-variable "create_oidc_provider" {
-  description = "Whether to create the OIDC provider. Set to false if it already exists."
-  type        = bool
-  default     = true
-}
-
-variable "oidc_provider_arn" {
-  description = "ARN of existing OIDC provider. Required if create_oidc_provider is false."
-  type        = string
-  default     = null
-}
-
 variable "github_repositories" {
   description = <<-EOT
     Map of GitHub repositories and their IAM role configurations.

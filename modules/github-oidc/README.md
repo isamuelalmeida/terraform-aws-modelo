@@ -4,7 +4,7 @@ Módulo Terraform para configurar integração OIDC entre GitHub Actions e AWS, 
 
 ## Características
 
-- ✅ Criação automática do OIDC Provider (ou uso de existente)
+- ✅ Criação automática do OIDC Provider
 - ✅ Suporte a múltiplos repositórios com roles dedicadas
 - ✅ Configuração dinâmica de permissões (managed + inline policies)
 - ✅ Validações de segurança integradas
@@ -113,23 +113,10 @@ module "github_oidc" {
 
 ## Uso com OIDC Provider Existente
 
-```hcl
-module "github_oidc" {
-  source = "../../modules/github-oidc"
+Se você já possui um OIDC Provider do GitHub na sua conta AWS, pode reutilizá-lo importando para o Terraform:
 
-  env  = "dev"
-  name = "myproject"
-
-  create_oidc_provider = false
-  oidc_provider_arn    = "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
-
-  github_repositories = {
-    my-repo = {
-      subjects = ["repo:myorg/my-repo:*"]
-      managed_policy_arns = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
-    }
-  }
-}
+```bash
+terraform import module.github_oidc.aws_iam_openid_connect_provider.github arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
 ```
 
 ## Padrões de Subject
@@ -198,8 +185,6 @@ jobs:
 |------|-----------|------|--------|-------------|
 | env | Nome do ambiente | string | - | Sim |
 | name | Nome do projeto | string | - | Sim |
-| create_oidc_provider | Criar OIDC provider | bool | true | Não |
-| oidc_provider_arn | ARN do OIDC existente | string | null | Condicional |
 | github_repositories | Configuração dos repositórios | map(object) | - | Sim |
 | tags | Tags para recursos | map(string) | {} | Não |
 
@@ -208,9 +193,7 @@ jobs:
 | Nome | Descrição |
 |------|-----------|
 | oidc_provider_arn | ARN do OIDC provider |
-| oidc_provider_url | URL do OIDC provider |
 | role_arns | Map de ARNs das roles criadas |
-| role_names | Map de nomes das roles criadas |
 
 ## Segurança
 
@@ -224,7 +207,5 @@ jobs:
 ## Validações
 
 O módulo inclui validações automáticas:
-- ✅ Pelo menos um repositório configurado
 - ✅ Cada repositório tem pelo menos um subject
 - ✅ Session duration entre 1h e 12h
-- ✅ OIDC provider ARN obrigatório se não criar novo

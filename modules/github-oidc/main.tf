@@ -3,8 +3,6 @@ data "tls_certificate" "github" {
 }
 
 resource "aws_iam_openid_connect_provider" "github" {
-  count = var.create_oidc_provider ? 1 : 0
-
   url             = "https://token.actions.githubusercontent.com"
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.github.certificates[0].sha1_fingerprint]
@@ -17,15 +15,6 @@ resource "aws_iam_openid_connect_provider" "github" {
   )
 }
 
-data "aws_iam_openid_connect_provider" "github" {
-  count = var.create_oidc_provider ? 0 : 1
-  arn   = var.oidc_provider_arn
-}
-
-locals {
-  oidc_provider_arn = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : data.aws_iam_openid_connect_provider.github[0].arn
-}
-
 data "aws_iam_policy_document" "github_assume_role" {
   for_each = var.github_repositories
 
@@ -35,7 +24,7 @@ data "aws_iam_policy_document" "github_assume_role" {
 
     principals {
       type        = "Federated"
-      identifiers = [local.oidc_provider_arn]
+      identifiers = [aws_iam_openid_connect_provider.github.arn]
     }
 
     condition {
