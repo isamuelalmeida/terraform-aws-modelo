@@ -64,7 +64,6 @@ module "external_secrets" {
   env          = var.env
   name         = var.name
   cluster_name = module.eks.cluster_name
-  aws_region   = var.region
   secrets_arns = ["*"]
 
   tags = var.common_tags
