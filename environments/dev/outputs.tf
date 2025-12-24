@@ -7,13 +7,9 @@ output "karpenter_queue_name" {
   value = module.kubernetes_addons.karpenter_queue_name
 }
 
-output "karpenter_service_account_role_arn" {
-  value = module.kubernetes_addons.karpenter_service_account_role_arn
-}
-
-output "eks_managed_node_groups" {
-  description = "EKS initial node group IAM role ARN"
-  value       = module.eks.eks_managed_node_groups["eks-node-initial"].iam_role_arn
+output "eks_managed_node_groups_iam_role_name" {
+  description = "EKS initial node group IAM role Name"
+  value       = module.eks.eks_managed_node_groups["eks-node-initial"].iam_role_name
 }
 
 output "github_oidc_provider_arn" {
