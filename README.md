@@ -67,7 +67,7 @@ Obtenha a senha inicial do admin:
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
-Faça port-forward para acessar a UI do ArgoCD:
+Faça port-forward para acessar:
 
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -76,6 +76,37 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 Acesse: https://localhost:8080
 - Usuário: `admin`
 - Senha: (obtida no comando acima)
+
+
+### 6. Faça o deploy das aplicações e ferramentas via ArgoCD
+
+```bash
+git clone https://github.com/org-sam/infra-gitops.git
+```
+
+```bash
+kubectl apply -f infra-gitops/root-app/app.yaml
+```
+
+### 7. Acesse a aplicação Frontend do E-commerce
+
+Faça port-forward para acessar:
+
+```bash
+kubectl port-forward svc/ecommerce-frontend -n ecommerce-frontend 8081:80
+```
+
+Acesse: http://localhost:8081
+
+### 7. Acesse o Grafana
+
+Faça port-forward para acessar:
+
+```bash
+kubectl port-forward svc/monitoring-base-dev-demo-grafana -n monitoring 8082:80
+```
+
+Acesse: http://localhost:8082
 
 ## Componentes dos Módulos
 
