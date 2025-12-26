@@ -108,6 +108,17 @@ kubectl port-forward svc/monitoring-base-dev-demo-grafana -n monitoring 8082:80
 
 Acesse: http://localhost:8082
 
+### 8. Resolução de problemas
+
+- Para garantir que as aplicações estejam configurado com o init-container do auto-instrumentation do opentelemetry, reinicie o deployment.
+
+```bash
+kubectl rollout restart deployment -n ecommerce-frontend ecommerce-frontend
+kubectl rollout restart deployment -n ecommerce-catalog-service ecommerce-catalog-service
+```
+
+- Caso alguma aplicação no ArgoCD esteja com status OutOfSync ou Degraded, faça o sync via UI do ArgoCD, e se persistir, faça o "delete" via UI do ArgoCD da aplicação e aguarde a aplicação ser criada novamente com status de "Healthy".
+
 ## Componentes dos Módulos
 
 ### Módulo VPC (`modules/vpc`)
